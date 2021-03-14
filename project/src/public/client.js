@@ -84,6 +84,7 @@ const ImageOfTheDay = (apod) => {
             <p>${apod.explanation}</p>
         `)
     } else {
+        console.log(apod)
         return (`
             <img src="${apod.image.url}" height="350px" width="100%" />
             <p>${apod.image.explanation}</p>
@@ -100,6 +101,7 @@ const getImageOfTheDay = (state) => {
     fetch(`http://localhost:3000/apod`)
         .then(res => res.json())
         .then(apod => updateStore(store, { apod }))
-        console.log(store, state)
+
+
     //return data
 }
