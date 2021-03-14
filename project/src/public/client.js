@@ -1,7 +1,6 @@
 let store = {
     user: { name: "Student" },
     apod: '',
-    currentRover: '',
     rovers: ['Curiosity', 'Opportunity', 'Spirit'],
 }
 
@@ -65,7 +64,7 @@ const Greeting = (name) => {
 }
 
 // Example of a pure function that renders infomation requested from the backend
-const ImageOfTheDay = (apod, currentRover) => {
+const ImageOfTheDay = (apod) => {
 
     // If image does not already exist, or it is not from today -- request it again
     const today = new Date()
@@ -73,35 +72,26 @@ const ImageOfTheDay = (apod, currentRover) => {
     console.log(photodate.getDate(), today.getDate());
 
     console.log(photodate.getDate() === today.getDate());
-    if (!currentRover || currentRover.date === today.getDate() ) {
-        getImageRover(store)
+    if (!apod || apod.date === today.getDate() ) {
+        getImageOfTheDay(store)
     }
 
     // check if the photo of the day is actually type video!
-    if (currentRover.media_type === "video") {
+    if (apod.media_type === "video") {
         return (`
-            <p>See today's featured video <a href="${currentRover.url}">here</a></p>
-            <p>${currentRover.title}</p>
-            <p>${currentRover.explanation}</p>
+            <p>See today's featured video <a href="${apod.url}">here</a></p>
+            <p>${apod.title}</p>
+            <p>${apod.explanation}</p>
         `)
     } else {
         return (`
-            <img src="${currentRover.image.url}" height="350px" width="100%" />
-            <p>${currentRover.image.explanation}</p>
+            <img src="${apod.image.url}" height="350px" width="100%" />
+            <p>${apod.image.explanation}</p>
         `)
     }
 }
 
 // ------------------------------------------------------  API CALLS
-
-const getImageRover = (currentRover) => {
-    console.log(currentRover)
-    fetch(`http://localhost:3000/manifests/rovers/${currentRover}`)
-        .then(res => res.json())
-        .then(rovers => updateStore(store, { currentRoverData }))
-
-    //return data
-}
 
 // Example API call
 const getImageOfTheDay = (state) => {
@@ -111,5 +101,5 @@ const getImageOfTheDay = (state) => {
         .then(res => res.json())
         .then(apod => updateStore(store, { apod }))
 
-    //return data
+    return data
 }
