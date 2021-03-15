@@ -38,12 +38,39 @@ const App = (state) => {
                     explanation are returned. These keywords could be used as auto-generated hashtags for twitter or instagram feeds;
                     but generally help with discoverability of relevant imagery.
                 </p>
+                ${dropDownMenu(DropDown)}
                 ${roverSection(store.rovers.map(x => x))}
             </section>
         </main>
         <footer></footer>
     `
 }
+root.addEventListener('change', () => {
+    getRoverAPI(store, roverForm().value)
+})
+const DropDown = (option1, option2, option3, buttonId, prompt) => {
+    return `
+        <select id='${buttonId}'>
+        <option disabled selected value> -- ${prompt} -- </option>
+        <option>${option1}</option>
+        <option>${option2}</option>
+        <option>${option3}</option>
+        </select>
+    `
+}
+const dropDownMenu = (callback) => {
+    const roverMenu = store.rovers.map(x => x)
+    return callback(roverMenu[0], roverMenu[1], roverMenu[2], 'dropDownMenu', 'choose a rover')
+}
+
+const roverForm = () => {
+    //checks first if the dropdown menu is there
+    if (document.getElementById('dropDownMenu')) {
+      console.log("Test")
+      return document.getElementById('dropDownMenu')}
+    else return 'root'
+}
+//console.log(roverForm())
 
 // listening for load event because page should load before any JS is called
 window.addEventListener('load', () => {
