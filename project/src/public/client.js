@@ -1,7 +1,7 @@
 let store = {
     user: { name: "NASA Enthusiast" },
     //apod: '',
-    curiosity: '',
+    //curiosity: '',
     rovers: ['Curiosity', 'Opportunity', 'Spirit'],
 }
 
@@ -21,7 +21,7 @@ const render = async (root, state) => {
 
 // create content
 const App = (state) => {
-    let { rovers, curiosity } = state
+    let { rovers } = state
 
     return `
         <header></header>
@@ -38,7 +38,7 @@ const App = (state) => {
                     explanation are returned. These keywords could be used as auto-generated hashtags for twitter or instagram feeds;
                     but generally help with discoverability of relevant imagery.
                 </p>
-                ${ImageOfTheDay(curiosity)}
+                ${roverSection(rovers[0])}
             </section>
         </main>
         <footer></footer>
@@ -66,42 +66,49 @@ const Greeting = (name) => {
 }
 
 // Example of a pure function that renders infomation requested from the backend
-const ImageOfTheDay = (curiosity) => {
+const roverSection = (rover) => {
 
     // If image does not already exist, or it is not from today -- request it again
     const today = new Date()
-
-    if (!curiosity || curiosity.date === '' ) {
-        getCuriosityImage(store)
+    console.log(rover);
+    //getRoverAPI(store, rover)
+    if (!rover || rover.date === '' ) {
+        console.log(rover);
+        getRoverAPI(store, rover)
     } else{
-      const photodate = new Date(curiosity.date)
-      console.log(photodate.getDate(), today.getDate());
-      console.log(photodate.getDate() === today.getDate());
+      const photodate = new Date(rover.date)
+      //console.log(store, curiosity);
+      //console.log(photodate.getDate(), today.getDate());
+      //console.log(photodate.getDate() === today.getDate());
     }
 
     // check if the photo of the day is actually type video!
-    if (curiosity.media_type === "video") {
+    if (rover.media_type === "video") {
         return (`
-            <p>See today's featured video <a href="${curiosity.url}">here</a></p>
-            <p>${curiosity.title}</p>
-            <p>${curiosity.explanation}</p>
+            <p>See today's featured video <a href="${rover.url}">here</a></p>
+            <p>${rover.title}</p>
+            <p>${rover.explanation}</p>
         `)
     } else {
-        console.log(curiosity.image.photos)
+        console.log(rover.image.photos[1])
         return (`
-            <img src="${curiosity.image.photos[1].img_src}" height="350px" width="100%" />
-            <p>${curiosity.image.explanation}</p>
+            <img src="${rover.image.photos[0].img_src}" height="350px" width="100%" />
+            <p>Rover: ${rover.image.photos[0].rover.name}</p>
+            <p>Launch date: ${rover.image.photos[0].rover.launch_date}</p>
+            <p>Landing date: ${rover.image.photos[0].rover.landing_date}</p>
+            <p>Status: ${rover.image.photos[0].rover.status}</p>
+            <p>Date of photo taken: ${rover.image.photos[0].earth_date}</p>
         `)
     }
 }
 
 // ------------------------------------------------------  API CALLS
-const getCuriosityImage = (state) => {
-    let { curiosity } = state
+const getRoverAPI = (state, rover) => {
+    let { rovers } = state
 
-    fetch(`http://localhost:3000/curiosity`)
+    fetch(`http://localhost:3000/${rover}`)
         .then(res => res.json())
-        .then(curiosity => updateStore(store, { curiosity }))
+        .then(curiosity => updateStore(store, { rovers }))
 }
 
 
