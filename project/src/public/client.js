@@ -38,7 +38,7 @@ const App = (state) => {
                     explanation are returned. These keywords could be used as auto-generated hashtags for twitter or instagram feeds;
                     but generally help with discoverability of relevant imagery.
                 </p>
-                ${roverSection(rovers[0])}
+                ${roverSection(store.rovers.map(x => x))}
             </section>
         </main>
         <footer></footer>
@@ -71,7 +71,7 @@ const roverSection = (rover) => {
     // If image does not already exist, or it is not from today -- request it again
     const today = new Date()
     console.log(rover);
-    //getRoverAPI(store, rover)
+    //getRoverAPI(store, rover[0])
     if (!rover || rover.date === '' ) {
         console.log(rover);
         getRoverAPI(store, rover)
