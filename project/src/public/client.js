@@ -20,7 +20,7 @@ const render = async (root, state) => {
 // create content
 const App = (state) => {
     let { rovers, apod } = state
-
+    console.log(apod)
     return `
         <header></header>
         <main>
@@ -97,10 +97,10 @@ const roverSection = (rover) => {
 
     // If image does not already exist, or it is not from today -- request it again
     const today = new Date()
-    console.log(store);
+    //console.log(store);
     //getRoverAPI(store, rover[0])
     if (!rover || rover.date === '' ) {
-        console.log(rover);
+        //console.log(rover);
         getCuriosity(store)
     } else{
       const photodate = new Date(rover.date)
@@ -133,7 +133,7 @@ const roverSection2 = (rover) => {
 
     // If image does not already exist, or it is not from today -- request it again
     const today = new Date()
-    console.log(store);
+    //console.log(store);
     //getRoverAPI(store, rover[0])
     if (!rover || rover.date === '' ) {
         console.log(rover);
@@ -177,7 +177,7 @@ const getCuriosity = (state) => {
 }
 const getSpirit = (state) => {
     let { apod } = state
-
+    console.log(apod)
     fetch(`http://localhost:3000/spirit`)
         .then(res => res.json())
         .then(apod => updateStore(store, { apod }))
