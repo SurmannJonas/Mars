@@ -58,7 +58,7 @@ app.get('/opportunity', async (req, res) => {
 // example API call
 app.get('/apod', async (req, res) => {
     try {
-        //console.log("Test")
+        console.log("Test")
         let image = await fetch(`https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?earth_date=2015-6-3&api_key=${process.env.API_KEY}`)
             .then(res => res.json())
         res.send({ image })

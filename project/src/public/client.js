@@ -1,7 +1,6 @@
 let store = {
-    user: { name: "NASA Enthusiast" },
-    //apod: '',
-    //curiosity: '',
+    user: { name: "Student" },
+    apod: '',
     rovers: ['Curiosity', 'Opportunity', 'Spirit'],
 }
 
@@ -9,7 +8,6 @@ let store = {
 const root = document.getElementById('root')
 
 const updateStore = (store, newState) => {
-    console.log("New State ", newState)
     store = Object.assign(store, newState)
     render(root, store)
 }
@@ -21,7 +19,7 @@ const render = async (root, state) => {
 
 // create content
 const App = (state) => {
-    let { rovers } = state
+    let { rovers, apod } = state
 
     return `
         <header></header>
@@ -38,40 +36,14 @@ const App = (state) => {
                     explanation are returned. These keywords could be used as auto-generated hashtags for twitter or instagram feeds;
                     but generally help with discoverability of relevant imagery.
                 </p>
-                ${dropDownMenu(DropDown)}
-                ${roverSection(store.rovers.map(x => x))}
+
+                ${roverSection(apod)}
             </section>
         </main>
         <footer></footer>
     `
 }
-root.addEventListener('change', () => {
-    getRoverAPI(store, roverForm().value)
-})
-const DropDown = (option1, option2, option3, buttonId, prompt) => {
-    return `
-        <select id='${buttonId}'>
-        <option disabled selected value> -- ${prompt} -- </option>
-        <option>${option1}</option>
-        <option>${option2}</option>
-        <option>${option3}</option>
-        </select>
-    `
-}
-const dropDownMenu = (callback) => {
-    const roverMenu = store.rovers.map(x => x)
-    return callback(roverMenu[0], roverMenu[1], roverMenu[2], 'dropDownMenu', 'choose a rover')
-}
-
-const roverForm = () => {
-    //checks first if the dropdown menu is there
-    if (document.getElementById('dropDownMenu')) {
-      console.log("Test")
-      return document.getElementById('dropDownMenu')}
-    else return 'root'
-}
-//console.log(roverForm())
-
+//${ImageOfTheDay(apod)}
 // listening for load event because page should load before any JS is called
 window.addEventListener('load', () => {
     render(root, store)
@@ -93,6 +65,33 @@ const Greeting = (name) => {
 }
 
 // Example of a pure function that renders infomation requested from the backend
+const ImageOfTheDay = (apod) => {
+    console.log(apod);
+    // If image does not already exist, or it is not from today -- request it again
+    const today = new Date()
+    const photodate = new Date(apod.date)
+    console.log(photodate.getDate(), today.getDate());
+
+    console.log(photodate.getDate() === today.getDate());
+    if (!apod || apod.date === today.getDate() ) {
+        getImageOfTheDay(store)
+    }
+
+    // check if the photo of the day is actually type video!
+    if (apod.media_type === "video") {
+        return (`
+            <p>See today's featured video <a href="${apod.url}">here</a></p>
+            <p>${apod.title}</p>
+            <p>${apod.explanation}</p>
+        `)
+    } else {
+        return (`
+            <img src="${apod.image.url}" height="350px" width="100%" />
+            <p>${apod.image.explanation}</p>
+        `)
+    }
+}
+
 const roverSection = (rover) => {
 
     // If image does not already exist, or it is not from today -- request it again
@@ -101,7 +100,7 @@ const roverSection = (rover) => {
     //getRoverAPI(store, rover[0])
     if (!rover || rover.date === '' ) {
         console.log(rover);
-        getRoverAPI(store, rover)
+        getImageOfTheDay(store)
     } else{
       const photodate = new Date(rover.date)
       //console.log(store, curiosity);
@@ -117,7 +116,7 @@ const roverSection = (rover) => {
             <p>${rover.explanation}</p>
         `)
     } else {
-        console.log(rover.image.photos[1])
+        //console.log(rover.image.photos[1])
         return (`
             <img src="${rover.image.photos[0].img_src}" height="350px" width="100%" />
             <p>Rover: ${rover.image.photos[0].rover.name}</p>
@@ -129,21 +128,17 @@ const roverSection = (rover) => {
     }
 }
 
+
+
 // ------------------------------------------------------  API CALLS
-const getRoverAPI = (state, rover) => {
-    let { rovers } = state
-
-    fetch(`http://localhost:3000/${rover}`)
-        .then(res => res.json())
-        .then(curiosity => updateStore(store, { rovers }))
-}
-
 
 // Example API call
-//const getImageOfTheDay = (state) => {
-    //let { apod } = state
+const getImageOfTheDay = (state) => {
+    let { apod } = state
 
-    //fetch(`http://localhost:3000/apod`)
-        //.then(res => res.json())
-        //.then(apod => updateStore(store, { apod }))
-//}
+    fetch(`http://localhost:3000/curiosity`)
+        .then(res => res.json())
+        .then(apod => updateStore(store, { apod }))
+
+    //return data
+}
