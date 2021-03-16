@@ -1,10 +1,8 @@
 let store = {
     user: { name: "NASA Enthusiast" },
-    apod: '',
     curiosity: '',
     spirit: '',
     opportunity: '',
-    rovers: ['Curiosity', 'Opportunity', 'Spirit'],
 }
 
 // add our markup to the page
@@ -19,18 +17,15 @@ const render = async (root, state) => {
     root.innerHTML = App(state)
 }
 
-
 // create content
 const App = (state) => {
-    let { rovers, apod, curiosity } = state
 
     return `
         <header></header>
         <main>
             ${Greeting(store.user.name)}
             <section>
-                <h3>Put things on the page!</h3>
-                <p>Here is an example section.</p>
+                <h3>Some facts</h3>
                 <p>
                     One of the most popular websites at NASA is the Astronomy Picture of the Day. In fact, this website is one of
                     the most popular websites across all federal agencies. It has the popular appeal of a Justin Bieber video.
@@ -39,14 +34,16 @@ const App = (state) => {
                     explanation are returned. These keywords could be used as auto-generated hashtags for twitter or instagram feeds;
                     but generally help with discoverability of relevant imagery.
                 </p>
-                ${roverSection1(store.curiosity)}
-              
+                <h3>Choose between the Curiosity, Spirit & Opportunity Mars rover</h3>
+                ${roverSection(store.curiosity, 1)}
+                ${roverSection(store.spirit, 2)}
+                ${roverSection(store.opportunity, 3)}
             </section>
         </main>
         <footer></footer>
     `
 }
-//${ImageOfTheDay(apod)}
+
 // listening for load event because page should load before any JS is called
 window.addEventListener('load', () => {
     render(root, store)
@@ -58,7 +55,7 @@ window.addEventListener('load', () => {
 const Greeting = (name) => {
     if (name) {
         return `
-            <h1>Welcome, ${name}!</h1>
+            <h1>Dear ${name}, welcome to the Mars dashboard!</h1>
         `
     }
     return `
@@ -66,20 +63,36 @@ const Greeting = (name) => {
     `
 }
 
-const roverSection1 = (rover) => {
+const roverSection = (rover, roverVar) => {
     // If image does not already exist, or it is not from today -- request it again
     const today = new Date()
 
     //if (!store.curiosity || store.curiosity.image.photos[0].earth_date === '' ) {
-
-    if (!rover) {
-        getCuriosity(store)
-        rover = store.curiosity
-        console.log(rover)
-    } else{
-      const photodate = new Date(rover.date)
+    if (roverVar === 1) {
+      if (!rover || rover !== store.curiosity) {
+          getCuriosity(store)
+          rover = store.curiosity
+      } else{
+        const photodate = new Date(rover.date)
+      }
     }
-
+    if (roverVar === 2) {
+      if (!rover || rover !== store.spirit) {
+          getSpirit(store)
+          rover = store.spirit
+      } else{
+        const photodate = new Date(rover.date)
+      }
+    }
+    if (roverVar === 3) {
+      if (!rover || rover !== store.opportunity) {
+          getOpportunity(store)
+          rover = store.opportunity
+      } else{
+        const photodate = new Date(rover.date)
+      }
+    }
+    console.log(rover)
     // check if the photo of the day is actually type video!
     if (rover.media_type === "video") {
         return (`
@@ -116,16 +129,14 @@ const getCuriosity = async function (state) {
 const getSpirit = async function (state) {
     let { spirit } = state
 
-    const spiritResp = await fetch(`http://localhost:3000/curiosity`)
+    const spiritResp = await fetch(`http://localhost:3000/spirit`)
     spirit = await spiritResp.json()
     updateStore(store, { spirit })
-      console.log(spirit)
 }
 const getOpportunity = async function (state) {
     let { opportunity } = state
 
-    const opportunityResp = await fetch(`http://localhost:3000/curiosity`)
+    const opportunityResp = await fetch(`http://localhost:3000/opportunity`)
     opportunity  = await opportunityResp.json()
     updateStore(store, { opportunity  })
-      console.log(opportunity)
 }
