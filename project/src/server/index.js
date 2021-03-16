@@ -19,8 +19,8 @@ app.get('/curiosity', async (req, res) => {
       const maxdate = (await fetch(`https://api.nasa.gov/mars-photos/api/v1/rovers?api_key=${process.env.API_KEY}`)
           .then(res => res.json())).rovers[0].max_date
         console.log(maxdate)
-        let image = await fetch(`https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/latest_photos&api_key=${process.env.API_KEY}`)
-            .then(res => res.json())  //https://api.nasa.gov/mars-photos/api/v1/rovers/${rover}/latest_photos?api_key=${process.env.API_KEY}
+        let image = await fetch(`https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?earth_date=${maxdate}&api_key=${process.env.API_KEY}`)
+            .then(res => res.json())
         res.send({ image })
     } catch (err) {
         console.log('error:', err);
