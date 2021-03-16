@@ -35,13 +35,42 @@ const App = (state) => {
                     but generally help with discoverability of relevant imagery.
                 </p>
                 <h3>Choose between the Curiosity, Spirit & Opportunity Mars rover</h3>
+                <p>${roverChoice(DropDownMenu)}  </p>
                 ${roverSection(store.curiosity, 1)}
                 ${roverSection(store.spirit, 2)}
                 ${roverSection(store.opportunity, 3)}
+
             </section>
         </main>
         <footer></footer>
     `
+}
+//  ${root.addEventListener('change', () => {return roverSection(store.curiosity, getRoverChoice.value)})}
+//${roverSection(store.curiosity, 1)}
+//${roverSection(store.spirit, 2)}
+//${roverSection(store.opportunity, 3)}
+
+// the DropDown function allows us to create a custom dropdown menu
+const DropDownMenu = (option1, option2, option3, btnID, prompt) => {
+    return `
+        <select id='${btnID}'>
+        <option disabled selected value> -- ${prompt} -- </option>
+        <option>${option1}</option>
+        <option>${option2}</option>
+        <option>${option3}</option>
+        </select>
+    `
+}
+//higher order function
+const roverChoice = (callback) => {
+    return callback('curiosity', 'opportunity', 'spirit', 'roverChoice', 'choose a rover')
+}
+root.addEventListener('change', () => {
+    return roverSection(store.curiosity, getRoverChoice.value)
+})
+const getRoverChoice = () => {
+    if (document.getElementById('roverDropDown')) return document.getElementById('roverChoice')
+    else return 'root'
 }
 
 // listening for load event because page should load before any JS is called
@@ -66,7 +95,6 @@ const Greeting = (name) => {
 const roverSection = (rover, roverVar) => {
     // If image does not already exist, or it is not from today -- request it again
     const today = new Date()
-
     //if (!store.curiosity || store.curiosity.image.photos[0].earth_date === '' ) {
     if (roverVar === 1) {
       if (!rover || rover !== store.curiosity) {
@@ -88,11 +116,13 @@ const roverSection = (rover, roverVar) => {
       if (!rover || rover !== store.opportunity) {
           getOpportunity(store)
           rover = store.opportunity
+          const test = roverImages(rover)
       } else{
         const photodate = new Date(rover.date)
       }
     }
-    console.log(rover)
+    //const test = roverImages(rover)
+    //console.log(test)
     // check if the photo of the day is actually type video!
     if (rover.media_type === "video") {
         return (`
@@ -104,6 +134,7 @@ const roverSection = (rover, roverVar) => {
 
         return (`
             <img src="${rover.image.photos[0].img_src}" height="350px" width="100%" />
+            <figcaption>Camera: ${rover.image.photos[0].camera.full_name}</figcaption>
             <p>Rover: ${rover.image.photos[0].rover.name}</p>
             <p>Launch date: ${rover.image.photos[0].rover.launch_date}</p>
             <p>Landing date: ${rover.image.photos[0].rover.landing_date}</p>
@@ -113,9 +144,20 @@ const roverSection = (rover, roverVar) => {
     }
 }
 
+const roverImages = (roverData) => {
 
-
-
+            const filterRover = roverData.image.photos.filter((x, y, z) => {
+                if (y > 0) return x.camera.full_name != z[y - 1].camera.full_name
+                else return x = x
+            })
+            const map1 = filterRover.map((x, y) => {
+                return (`
+                    <img src='${x.img_src}' max-width:100%; height:auto />
+                    <figcaption>Taken with the ${x.camera.full_name}</figcaption>
+                `)
+            })
+            return filterRover
+}
 
 // ------------------------------------------------------  API CALLS
 const getCuriosity = async function (state) {
