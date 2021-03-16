@@ -19,6 +19,7 @@ app.get('/curiosity', async (req, res) => {
       const maxdate = (await fetch(`https://api.nasa.gov/mars-photos/api/v1/rovers?api_key=${process.env.API_KEY}`)
           .then(res => res.json())).rovers[0].max_date
         console.log(maxdate)
+        //let image = await fetch(`https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/latest_photos?api_key=${process.env.API_KEY}`)
         let image = await fetch(`https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?earth_date=${maxdate}&api_key=${process.env.API_KEY}`)
             .then(res => res.json())
         res.send({ image })
@@ -48,18 +49,6 @@ app.get('/opportunity', async (req, res) => {
           .then(res => res.json())).rovers[2].max_date
         console.log(maxdate)
         let image = await fetch(`https://api.nasa.gov/mars-photos/api/v1/rovers/opportunity/photos?earth_date=${maxdate}&api_key=${process.env.API_KEY}`)
-            .then(res => res.json())
-        res.send({ image })
-    } catch (err) {
-        console.log('error:', err);
-    }
-})
-
-// example API call
-app.get('/apod', async (req, res) => {
-    try {
-        console.log("Test")
-        let image = await fetch(`https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?earth_date=2015-6-3&api_key=${process.env.API_KEY}`)
             .then(res => res.json())
         res.send({ image })
     } catch (err) {

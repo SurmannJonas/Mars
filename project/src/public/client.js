@@ -20,7 +20,7 @@ const render = async (root, state) => {
 // create content
 const App = (state) => {
     let { rovers, apod } = state
-
+    //console.log(apod)
     return `
         <header></header>
         <main>
@@ -36,8 +36,8 @@ const App = (state) => {
                     explanation are returned. These keywords could be used as auto-generated hashtags for twitter or instagram feeds;
                     but generally help with discoverability of relevant imagery.
                 </p>
-
                 ${roverSection(apod)}
+
             </section>
         </main>
         <footer></footer>
@@ -64,43 +64,46 @@ const Greeting = (name) => {
     `
 }
 
-// Example of a pure function that renders infomation requested from the backend
-const ImageOfTheDay = (apod) => {
-    console.log(apod);
+const roverSection = (rover) => {
     // If image does not already exist, or it is not from today -- request it again
     const today = new Date()
-    const photodate = new Date(apod.date)
-    console.log(photodate.getDate(), today.getDate());
+    //console.log(store);
 
-    console.log(photodate.getDate() === today.getDate());
-    if (!apod || apod.date === today.getDate() ) {
-        getImageOfTheDay(store)
+    if (!rover || rover.date === '' ) {
+        getCuriosity(store)
+    } else{
+      const photodate = new Date(rover.date)
     }
 
     // check if the photo of the day is actually type video!
-    if (apod.media_type === "video") {
+    if (rover.media_type === "video") {
         return (`
-            <p>See today's featured video <a href="${apod.url}">here</a></p>
-            <p>${apod.title}</p>
-            <p>${apod.explanation}</p>
+            <p>See today's featured video <a href="${rover.url}">here</a></p>
+            <p>${rover.title}</p>
+            <p>${rover.explanation}</p>
         `)
     } else {
+        //console.log(rover.image.photos[1])
         return (`
-            <img src="${apod.image.url}" height="350px" width="100%" />
-            <p>${apod.image.explanation}</p>
+            <img src="${rover.image.photos[0].img_src}" height="350px" width="100%" />
+            <p>Rover: ${rover.image.photos[0].rover.name}</p>
+            <p>Launch date: ${rover.image.photos[0].rover.launch_date}</p>
+            <p>Landing date: ${rover.image.photos[0].rover.landing_date}</p>
+            <p>Status: ${rover.image.photos[0].rover.status}</p>
+            <p>Date of photo taken: ${rover.image.photos[0].earth_date}</p>
         `)
     }
 }
 
-const roverSection = (rover) => {
+const roverSection2 = (rover) => {
 
     // If image does not already exist, or it is not from today -- request it again
     const today = new Date()
-    console.log(rover);
+    //console.log(store);
     //getRoverAPI(store, rover[0])
     if (!rover || rover.date === '' ) {
         console.log(rover);
-        getImageOfTheDay(store)
+        getSpirit(store)
     } else{
       const photodate = new Date(rover.date)
       //console.log(store, curiosity);
@@ -131,14 +134,26 @@ const roverSection = (rover) => {
 
 
 // ------------------------------------------------------  API CALLS
-
-// Example API call
-const getImageOfTheDay = (state) => {
+const getCuriosity = (state) => {
     let { apod } = state
-
+    console.log(apod)
     fetch(`http://localhost:3000/curiosity`)
         .then(res => res.json())
         .then(apod => updateStore(store, { apod }))
+}
+const getSpirit = (state) => {
+    let { apod } = state
 
-    //return data
+    fetch(`http://localhost:3000/spirit`)
+        .then(res => res.json())
+        .then(apod => updateStore(store, { apod }))
+
+
+}
+const getOpportunity = (state) => {
+    let { apod } = state
+
+    fetch(`http://localhost:3000/opportunity`)
+        .then(res => res.json())
+        .then(apod => updateStore(store, { apod }))
 }
