@@ -36,15 +36,14 @@ const App = (state) => {
                 </p>
                 <h3>Choose between the Curiosity, Spirit & Opportunity Mars rover</h3>
                 <p>${roverChoice(DropDownMenu)}  </p>
-                ${roverSection(store.curiosity, 1)}
-                ${roverSection(store.spirit, 2)}
-                ${roverSection(store.opportunity, 3)}
+                <p>${root.addEventListener('change', () => {roverDisplay(getRoverChoice())})}</p>
 
             </section>
         </main>
         <footer></footer>
     `
 }
+  //<p>${document.getElementById('btnID').onchange = roverSection(store.curiosity, getRoverChoice.value)}</p>
 //  ${root.addEventListener('change', () => {return roverSection(store.curiosity, getRoverChoice.value)})}
 //${roverSection(store.curiosity, 1)}
 //${roverSection(store.spirit, 2)}
@@ -63,15 +62,38 @@ const DropDownMenu = (option1, option2, option3, btnID, prompt) => {
 }
 //higher order function
 const roverChoice = (callback) => {
-    return callback('curiosity', 'opportunity', 'spirit', 'roverChoice', 'choose a rover')
+    return callback('curiosity', 'spirit', 'opportunity', 'roverChoice', 'choose a rover')
 }
-root.addEventListener('change', () => {
-    return roverSection(store.curiosity, getRoverChoice.value)
-})
+//const roverAdjust = root.addEventListener('change', () => {
+    //return roverSection(store.curiosity, getRoverChoice.value)
+//})
 const getRoverChoice = () => {
-    if (document.getElementById('roverDropDown')) return document.getElementById('roverChoice')
-    else return 'root'
+    if (document.getElementById('roverChoice')) {
+      return document.getElementById('roverChoice')
+    }
+    else {
+      return 'root'
+    }
 }
+const roverDisplay = (variable) => {
+    console.log(variable.value)
+
+    if(variable.value === 'curiosity'){
+      console.log('curiosity')
+      return roverSection(store.curiosity, 1)
+    } else if (variable.value === 'spirit') {
+      console.log('spirit')
+      return roverSection(store.spirit, 2)
+    } else if (variable.value === 'opportunity') {
+      console.log('opportunity')
+      return roverSection(store.spirit, 3)
+    } else {
+      const placeholder = 'Choose a Mars rover'
+      return placeholder
+    }
+}
+
+//root.addEventListener('change', () => {return roverDisplay(getRoverChoice())})
 
 // listening for load event because page should load before any JS is called
 window.addEventListener('load', () => {
