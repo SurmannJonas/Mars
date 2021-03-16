@@ -1,6 +1,7 @@
 let store = {
     user: { name: "Student" },
     apod: '',
+    curiosity: '',
     rovers: ['Curiosity', 'Opportunity', 'Spirit'],
 }
 
@@ -19,7 +20,7 @@ const render = async (root, state) => {
 
 // create content
 const App = (state) => {
-    let { rovers, apod } = state
+    let { rovers, apod, curiosity } = state
     //console.log(apod)
     return `
         <header></header>
@@ -67,30 +68,35 @@ const Greeting = (name) => {
 const roverSection = (rover) => {
     // If image does not already exist, or it is not from today -- request it again
     const today = new Date()
-    //console.log(store);
-
-    if (!rover || rover.date === '' ) {
+    //console.log(rover)
+    //console.log(store.curiosity)
+    //if (!store.curiosity || store.curiosity.date === '' ) {
+    //getCuriosity(store)
+    if (!store.curiosity) {
+        //console.log(rover)
+        console.log(store.curiosity)
+        //console.log(curiosity.image)
         getCuriosity(store)
     } else{
-      const photodate = new Date(rover.date)
+      const photodate = new Date(store.curiosity.date)
     }
 
     // check if the photo of the day is actually type video!
-    if (rover.media_type === "video") {
+    if (store.curiosity.media_type === "video") {
         return (`
-            <p>See today's featured video <a href="${rover.url}">here</a></p>
-            <p>${rover.title}</p>
-            <p>${rover.explanation}</p>
+            <p>See today's featured video <a href="${store.curiosity.url}">here</a></p>
+            <p>${store.curiosity.title}</p>
+            <p>${store.curiosity.explanation}</p>
         `)
     } else {
         //console.log(rover.image.photos[1])
         return (`
-            <img src="${rover.image.photos[0].img_src}" height="350px" width="100%" />
-            <p>Rover: ${rover.image.photos[0].rover.name}</p>
-            <p>Launch date: ${rover.image.photos[0].rover.launch_date}</p>
-            <p>Landing date: ${rover.image.photos[0].rover.landing_date}</p>
-            <p>Status: ${rover.image.photos[0].rover.status}</p>
-            <p>Date of photo taken: ${rover.image.photos[0].earth_date}</p>
+            <img src="${store.curiosity.image.photos[0].img_src}" height="350px" width="100%" />
+            <p>Rover: ${store.curiosity.image.photos[0].rover.name}</p>
+            <p>Launch date: ${store.curiosity.image.photos[0].rover.launch_date}</p>
+            <p>Landing date: ${store.curiosity.image.photos[0].rover.landing_date}</p>
+            <p>Status: ${store.curiosity.image.photos[0].rover.status}</p>
+            <p>Date of photo taken: ${store.curiosity.image.photos[0].earth_date}</p>
         `)
     }
 }
@@ -102,7 +108,7 @@ const roverSection2 = (rover) => {
     //console.log(store);
     //getRoverAPI(store, rover[0])
     if (!rover || rover.date === '' ) {
-        console.log(rover);
+        //console.log(rover)
         getSpirit(store)
     } else{
       const photodate = new Date(rover.date)
@@ -134,12 +140,15 @@ const roverSection2 = (rover) => {
 
 
 // ------------------------------------------------------  API CALLS
-const getCuriosity = (state) => {
-    let { apod } = state
-    console.log(apod)
-    fetch(`http://localhost:3000/curiosity`)
-        .then(res => res.json())
-        .then(apod => updateStore(store, { apod }))
+const getCuriosity = async function (state) {
+    let { curiosity } = state
+    //console.log(curiosity)
+    const curiosityResp = await fetch(`http://localhost:3000/curiosity`)
+    curiosity = await curiosityResp.json()
+    //console.log(curiosity)
+    updateStore(store, { curiosity })
+        //.then(res => res.json())
+        //.then(apod => updateStore(store, { apod }))
 }
 const getSpirit = (state) => {
     let { apod } = state
