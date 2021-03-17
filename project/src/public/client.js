@@ -4,7 +4,7 @@ let store = {
     spirit: '',
     opportunity: '',
 }
-
+// ------------------------------------------------------  COMPONENTS
 // add our markup to the page
 const root = document.getElementById('root')
 
@@ -36,19 +36,12 @@ const App = (state) => {
                 </p>
                 <h3>Choose between the Curiosity, Spirit & Opportunity Mars rover</h3>
                 <p>${roverChoice(DropDownMenu)}  </p>
-                <p>${root.addEventListener('change', () => {roverDisplay(getRoverChoice())})}</p>
-
+                <p id='roverPath'></p>
             </section>
         </main>
         <footer></footer>
     `
 }
-  //<p>${document.getElementById('btnID').onchange = roverSection(store.curiosity, getRoverChoice.value)}</p>
-//  ${root.addEventListener('change', () => {return roverSection(store.curiosity, getRoverChoice.value)})}
-//${roverSection(store.curiosity, 1)}
-//${roverSection(store.spirit, 2)}
-//${roverSection(store.opportunity, 3)}
-
 // the DropDown function allows us to create a custom dropdown menu
 const DropDownMenu = (option1, option2, option3, btnID, prompt) => {
     return `
@@ -64,9 +57,7 @@ const DropDownMenu = (option1, option2, option3, btnID, prompt) => {
 const roverChoice = (callback) => {
     return callback('curiosity', 'spirit', 'opportunity', 'roverChoice', 'choose a rover')
 }
-//const roverAdjust = root.addEventListener('change', () => {
-    //return roverSection(store.curiosity, getRoverChoice.value)
-//})
+
 const getRoverChoice = () => {
     if (document.getElementById('roverChoice')) {
       return document.getElementById('roverChoice')
@@ -75,32 +66,33 @@ const getRoverChoice = () => {
       return 'root'
     }
 }
-const roverDisplay = (variable) => {
-    console.log(variable.value)
 
+const roverDisplay = (variable) => {
     if(variable.value === 'curiosity'){
-      console.log('curiosity')
       return roverSection(store.curiosity, 1)
     } else if (variable.value === 'spirit') {
-      console.log('spirit')
       return roverSection(store.spirit, 2)
     } else if (variable.value === 'opportunity') {
-      console.log('opportunity')
       return roverSection(store.spirit, 3)
     } else {
       const placeholder = 'Choose a Mars rover'
       return placeholder
     }
 }
-
-//root.addEventListener('change', () => {return roverDisplay(getRoverChoice())})
-
+root.addEventListener('change', () => {const result = triggerRover(true)}, false)
+const triggerRover = (triggerValue) => {
+  if (triggerValue === true) {
+    const roverData = roverDisplay(getRoverChoice())
+    const roverHTML = document.getElementById('roverPath')
+    roverHTML.innerHTML = roverData
+  } else {
+    return 'root'
+  }
+}
 // listening for load event because page should load before any JS is called
 window.addEventListener('load', () => {
     render(root, store)
 })
-
-// ------------------------------------------------------  COMPONENTS
 
 // Pure function that renders conditional information -- THIS IS JUST AN EXAMPLE, you can delete it.
 const Greeting = (name) => {
@@ -117,9 +109,9 @@ const Greeting = (name) => {
 const roverSection = (rover, roverVar) => {
     // If image does not already exist, or it is not from today -- request it again
     const today = new Date()
-    //if (!store.curiosity || store.curiosity.image.photos[0].earth_date === '' ) {
     if (roverVar === 1) {
       if (!rover || rover !== store.curiosity) {
+          //console.log(roverVar)
           getCuriosity(store)
           rover = store.curiosity
       } else{
@@ -143,8 +135,6 @@ const roverSection = (rover, roverVar) => {
         const photodate = new Date(rover.date)
       }
     }
-    //const test = roverImages(rover)
-    //console.log(test)
     // check if the photo of the day is actually type video!
     if (rover.media_type === "video") {
         return (`
