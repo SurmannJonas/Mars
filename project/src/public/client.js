@@ -8,6 +8,15 @@ let store = Immutable.Map({
 // add our markup to the page
 const root = document.getElementById('root')
 
+// ------------------------------------------------------  EVENT LISTENERS
+// listening for load event because page should load before any JS is called
+window.addEventListener('load', () => {
+    render(root, store)
+})
+root.addEventListener('change', () => {
+  const result = triggerRover(true)
+}, false)
+
 const updateStore = (store, newState) => {
     store = Object.assign(store, newState)
     render(root, store)
@@ -80,7 +89,7 @@ const roverDisplay = (variable) => {
       return placeholder
     }
 }
-root.addEventListener('change', () => {const result = triggerRover(true)}, false)
+
 const triggerRover = (triggerValue) => {
   if (triggerValue === true) {
     const roverData = roverDisplay(getRoverChoice())
@@ -90,10 +99,6 @@ const triggerRover = (triggerValue) => {
     return 'root'
   }
 }
-// listening for load event because page should load before any JS is called
-window.addEventListener('load', () => {
-    render(root, store)
-})
 
 // Pure function that renders conditional information -- THIS IS JUST AN EXAMPLE, you can delete it.
 const Greeting = (name) => {
@@ -137,39 +142,42 @@ const roverSection = (rover, roverVar) => {
       }
     }
     // check if the photo of the day is actually type video!
-    if (rover.media_type === "video") {
+    if (rover.image.media_type === "video") {
         return (`
             <p>See today's featured video <a href="${rover.url}">here</a></p>
             <p>${rover.title}</p>
             <p>${rover.explanation}</p>
         `)
     } else {
-
-        return (`
-            <img src="${rover.image.photos[0].img_src}" height="350px" width="100%" />
-            <figcaption>Camera: ${rover.image.photos[0].camera.full_name}</figcaption>
-            <p>Rover: ${rover.image.photos[0].rover.name}</p>
-            <p>Launch date: ${rover.image.photos[0].rover.launch_date}</p>
-            <p>Landing date: ${rover.image.photos[0].rover.landing_date}</p>
-            <p>Status: ${rover.image.photos[0].rover.status}</p>
-            <p>Date of photo taken: ${rover.image.photos[0].earth_date}</p>
+        const finalRover = roverImages(rover)
+        console.log(rover)
+        //console.log(finalRover)
+        return (
+          finalRover+
+          `
+            <p>Rover: ${rover.image.latest_photos[0].rover.name}</p>
+            <p>Launch date: ${rover.image.latest_photos[0].rover.launch_date}</p>
+            <p>Landing date: ${rover.image.latest_photos[0].rover.landing_date}</p>
+            <p>Status: ${rover.image.latest_photos[0].rover.status}</p>
+            <p>Date of photo taken: ${rover.image.latest_photos[0].earth_date}</p>
         `)
     }
 }
 
 const roverImages = (roverData) => {
 
-            const filterRover = roverData.image.photos.filter((x, y, z) => {
+            const filterRover = roverData.image.latest_photos.filter((x, y, z) => {
                 if (y > 0) return x.camera.full_name != z[y - 1].camera.full_name
                 else return x = x
             })
             const map1 = filterRover.map((x, y) => {
                 return (`
-                    <img src='${x.img_src}' max-width:100%; height:auto />
-                    <figcaption>Taken with the ${x.camera.full_name}</figcaption>
+                     <img src='${x.img_src}' height="250px" width="100%" />
+                     <figcaption>Taken with the ${x.camera.full_name}</figcaption>
                 `)
+
             })
-            return filterRover
+            return map1
 }
 
 // ------------------------------------------------------  API CALLS
