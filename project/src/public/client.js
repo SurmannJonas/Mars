@@ -1,9 +1,9 @@
-let store = {
-    user: { name: "NASA Enthusiast" },
+let store = Immutable.Map({
+    user: Immutable.Map({ name: "NASA Enthusiast" }),
     curiosity: '',
     spirit: '',
     opportunity: '',
-}
+})
 // ------------------------------------------------------  COMPONENTS
 // add our markup to the page
 const root = document.getElementById('root')
@@ -23,7 +23,7 @@ const App = (state) => {
     return `
         <header></header>
         <main>
-            ${Greeting(store.user.name)}
+            ${Greeting(store.get('user').get('name'))}
             <section>
                 <h3>Some facts</h3>
                 <p>
@@ -60,7 +60,8 @@ const roverChoice = (callback) => {
 
 const getRoverChoice = () => {
     if (document.getElementById('roverChoice')) {
-      return document.getElementById('roverChoice')
+      const menuElement = document.getElementById('roverChoice')
+      return menuElement
     }
     else {
       return 'root'
