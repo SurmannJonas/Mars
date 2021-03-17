@@ -150,8 +150,6 @@ const roverSection = (rover, roverVar) => {
         `)
     } else {
         const finalRover = roverImages(rover)
-        console.log(rover)
-        //console.log(finalRover)
         return (
           finalRover+
           `
@@ -166,18 +164,18 @@ const roverSection = (rover, roverVar) => {
 
 const roverImages = (roverData) => {
 
-            const filterRover = roverData.image.latest_photos.filter((x, y, z) => {
-                if (y > 0) return x.camera.full_name != z[y - 1].camera.full_name
-                else return x = x
+            const filterRover = roverData.image.latest_photos.filter((curRover, i, roverAry) => {
+                if (i > 0) return curRover.camera.full_name != roverAry[i - 1].camera.full_name
+                else return curRover = curRover
             })
-            const map1 = filterRover.map((x, y) => {
+            const mapRover = filterRover.map((thisRover) => {
                 return (`
-                     <img src='${x.img_src}' height="250px" width="100%" />
-                     <figcaption>Taken with the ${x.camera.full_name}</figcaption>
+                     <p><img src='${thisRover.img_src}' /></p>
+                     <figcaption>Taken with the ${thisRover.camera.full_name}</figcaption>
                 `)
 
             })
-            return map1
+            return mapRover
 }
 
 // ------------------------------------------------------  API CALLS

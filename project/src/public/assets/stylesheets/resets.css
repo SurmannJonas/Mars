@@ -1,23 +1,49 @@
-html {
-  box-sizing: border-box;
-  font-size: 16px;
-}
-
-*, *:before, *:after {
-  box-sizing: border-box;
-}
-
-body, h1, h2, h3, h4, h5, h6, p, ol, ul, li {
-  margin: 0;
-  padding: 0;
-  font-weight: normal;
-}
-
-ol, ul {
-  list-style: none;
-}
+/* -------------------  MOBILE FIRST  --------------------- */
 
 img {
   max-width: 100%;
   height: auto;
+}
+
+
+/* -------------------  DESKTOP & TABLET  --------------------- */
+
+@media only screen and (min-width: 768px) {
+  img {
+    width: 350px;
+    height: 350px;
+  }
+}
+
+/* -------------------  LARGE SCREENS  -------------- */
+
+@media only screen and (min-width: 1824px) {
+  img {
+    width: 500px;
+    height: 500px;
+  }
+}
+
+
+body {
+  display: flex;
+  flex-direction: column;
+  font-family: Arial;
+  min-height: 100vh;
+
+}
+
+header {
+  /* header styles */
+}
+
+main {
+  flex: 1;
+  padding: 20px;
+  padding-right: 125px;
+
+}
+
+footer {
+  /* footer styles */
 }
