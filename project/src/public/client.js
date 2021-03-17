@@ -12,6 +12,9 @@ const root = document.getElementById('root')
 // listening for load event because page should load before any JS is called
 window.addEventListener('load', () => {
     render(root, store)
+    getCuriosity(store)
+    getSpirit(store)
+    getOpportunity(store)
 })
 root.addEventListener('change', () => {
   const result = triggerRover(true)
@@ -43,7 +46,7 @@ const App = (state) => {
                     explanation are returned. These keywords could be used as auto-generated hashtags for twitter or instagram feeds;
                     but generally help with discoverability of relevant imagery.
                 </p>
-                <h3>Choose between the Curiosity, Spirit & Opportunity Mars rover</h3>
+                <h3>Choose between the Curiosity, Spirit & Opportunity Mars rover to see genuine Mars pictures</h3>
                 <p>${roverChoice(DropDownMenu)}  </p>
                 <p id='roverPath'></p>
             </section>
@@ -185,7 +188,6 @@ const getCuriosity = async function (state) {
     const curiosityResp = await fetch(`http://localhost:3000/curiosity`)
     curiosity = await curiosityResp.json()
     updateStore(store, { curiosity })
-    //console.log(curiosity)
 }
 const getSpirit = async function (state) {
     let { spirit } = state
