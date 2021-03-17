@@ -12,7 +12,7 @@ const root = document.getElementById('root')
 // listening for load event because page should load before any JS is called
 window.addEventListener('load', () => {
     render(root, store)
-    getCuriosity(store)
+    getRoverAPI(store)
     getSpirit(store)
     getOpportunity(store)
 })
@@ -82,11 +82,11 @@ const getRoverChoice = () => {
 
 const roverDisplay = (variable) => {
     if(variable.value === 'curiosity'){
-      return roverSection(store.curiosity, 1)
+      return roverSection(store.curiosity, 1, variable.value)
     } else if (variable.value === 'spirit') {
-      return roverSection(store.spirit, 2)
+      return roverSection(store.spirit, 2, variable.value)
     } else if (variable.value === 'opportunity') {
-      return roverSection(store.spirit, 3)
+      return roverSection(store.spirit, 3, variable.value)
     } else {
       const placeholder = 'Choose a Mars rover'
       return placeholder
@@ -115,13 +115,12 @@ const Greeting = (name) => {
     `
 }
 
-const roverSection = (rover, roverVar) => {
+const roverSection = (rover, roverVar, whichRover) => {
     // If image does not already exist, or it is not from today -- request it again
     const today = new Date()
     if (roverVar === 1) {
       if (!rover || rover !== store.curiosity) {
-          //console.log(roverVar)
-          getCuriosity(store)
+          getRoverAPI(store)
           rover = store.curiosity
       } else{
         const photodate = new Date(rover.date)
@@ -144,16 +143,9 @@ const roverSection = (rover, roverVar) => {
         const photodate = new Date(rover.date)
       }
     }
-    // check if the photo of the day is actually type video!
-    if (rover.image.media_type === "video") {
-        return (`
-            <p>See today's featured video <a href="${rover.url}">here</a></p>
-            <p>${rover.title}</p>
-            <p>${rover.explanation}</p>
-        `)
-    } else {
-        const finalRover = roverImages(rover)
-        return (
+
+    const finalRover = roverImages(rover)
+    return (
           finalRover+
           `
             <p>Rover: ${rover.image.latest_photos[0].rover.name}</p>
@@ -162,7 +154,7 @@ const roverSection = (rover, roverVar) => {
             <p>Status: ${rover.image.latest_photos[0].rover.status}</p>
             <p>Date of photo taken: ${rover.image.latest_photos[0].earth_date}</p>
         `)
-    }
+
 }
 
 const roverImages = (roverData) => {
@@ -182,7 +174,7 @@ const roverImages = (roverData) => {
 }
 
 // ------------------------------------------------------  API CALLS
-const getCuriosity = async function (state) {
+const getRoverAPI = async function (state) {
     let { curiosity } = state
 
     const curiosityResp = await fetch(`http://localhost:3000/curiosity`)
