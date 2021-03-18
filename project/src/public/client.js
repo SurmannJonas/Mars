@@ -1,3 +1,4 @@
+//Immutable object enabled by Immutable.JS
 let store = Immutable.Map({
     user: Immutable.Map({ name: "NASA Enthusiast" }),
     curiosity: '',
@@ -16,20 +17,22 @@ window.addEventListener('load', () => {
     getSpirit(store)
     getOpportunity(store)
 })
+//addEventListener for recognizing change in the DropDown Menu for choosing the Mars Rover
 root.addEventListener('change', () => {
   const result = triggerRover()
 }, false)
-
+// ------------------------------------------------------  COMPONENTS
+//Update Immutable store Object
 const updateStore = (store, newState) => {
     store = Object.assign(store, newState)
     render(root, store)
 }
-
+//render function for DOM Manipulation
 const render = async (root, state) => {
     root.innerHTML = App(state)
 }
-
-// create content
+// ------------------------------------------------------  HTML
+//Creating HTML content with JS
 const App = (state) => {
 
     return `
@@ -54,7 +57,8 @@ const App = (state) => {
         <footer></footer>
     `
 }
-// the DropDown function allows us to create a custom dropdown menu
+// ------------------------------------------------------  COMPONENTS
+// the DropDown function for choosing between different Mars Rover types
 const DropDownMenu = (option1, option2, option3, btnID, prompt) => {
     return `
         <select id='${btnID}'>
@@ -65,11 +69,11 @@ const DropDownMenu = (option1, option2, option3, btnID, prompt) => {
         </select>
     `
 }
-//higher order function
+//higher order function 1 for building DropDown Menu
 const roverChoice = (callback) => {
     return callback('curiosity', 'spirit', 'opportunity', 'roverChoice', 'choose a rover')
 }
-
+//function for getting the element
 const getRoverChoice = () => {
     if (document.getElementById('roverChoice')) {
       const menuElement = document.getElementById('roverChoice')
@@ -79,7 +83,7 @@ const getRoverChoice = () => {
       return 'root'
     }
 }
-
+//Calling different functions for each Rover to show the Rover data
 const roverDisplay = (variable) => {
     if(variable.value === 'curiosity'){
       return roverSection(store.curiosity, 1, variable.value)
@@ -94,12 +98,13 @@ const roverDisplay = (variable) => {
 }
 
 const triggerRover = () => {
+    //higher order function 2
     const roverData = roverDisplay(getRoverChoice())
     const roverHTML = document.getElementById('roverPath')
     roverHTML.innerHTML = roverData
 }
 
-// Pure function that renders conditional information -- THIS IS JUST AN EXAMPLE, you can delete it.
+// Pure function that renders conditional information
 const Greeting = (name) => {
     if (name) {
         return `
@@ -110,9 +115,9 @@ const Greeting = (name) => {
         <h1>Hello!</h1>
     `
 }
-
+//roverSection invokes the API functions for each Rover and processes the Rover data
 const roverSection = (rover, roverVar, whichRover) => {
-    // If image does not already exist, or it is not from today -- request it again
+    // If image does not already exist -- request it again
     const today = new Date()
     if (roverVar === 1) {
       if (!rover || rover !== store.curiosity) {
@@ -138,7 +143,7 @@ const roverSection = (rover, roverVar, whichRover) => {
         const photodate = new Date(rover.date)
       }
     }
-
+    //Returning HTML elements including Rover images and data
     const finalRover = roverImages(rover)
     return (
           finalRover+
@@ -151,13 +156,14 @@ const roverSection = (rover, roverVar, whichRover) => {
         `)
 
 }
-
+//Processing Rover array data
 const roverImages = (roverData) => {
-
+            //Filtering returned Rover array
             const filterRover = roverData.image.latest_photos.filter((curRover, i, roverAry) => {
                 if (i > 0) return curRover.camera.full_name != roverAry[i - 1].camera.full_name
                 else return curRover = curRover
             })
+            //Mapping returned Rover array
             const mapRover = filterRover.map((thisRover) => {
                 return (`
                      <p><img src='${thisRover.img_src}' /></p>
@@ -168,7 +174,7 @@ const roverImages = (roverData) => {
             return mapRover
 }
 
-// ------------------------------------------------------  API CALLS
+// ------------------------------------------------------  API CALLS for each Mars Rover
 const getRoverAPI = async function (state) {
     let { curiosity } = state
 
