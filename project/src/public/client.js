@@ -17,7 +17,7 @@ window.addEventListener('load', () => {
     getOpportunity(store)
 })
 root.addEventListener('change', () => {
-  const result = triggerRover(true)
+  const result = triggerRover()
 }, false)
 
 const updateStore = (store, newState) => {
@@ -86,21 +86,17 @@ const roverDisplay = (variable) => {
     } else if (variable.value === 'spirit') {
       return roverSection(store.spirit, 2, variable.value)
     } else if (variable.value === 'opportunity') {
-      return roverSection(store.spirit, 3, variable.value)
+      return roverSection(store.opportunity, 3, variable.value)
     } else {
       const placeholder = 'Choose a Mars rover'
       return placeholder
     }
 }
 
-const triggerRover = (triggerValue) => {
-  if (triggerValue === true) {
+const triggerRover = () => {
     const roverData = roverDisplay(getRoverChoice())
     const roverHTML = document.getElementById('roverPath')
     roverHTML.innerHTML = roverData
-  } else {
-    return 'root'
-  }
 }
 
 // Pure function that renders conditional information -- THIS IS JUST AN EXAMPLE, you can delete it.
@@ -138,7 +134,6 @@ const roverSection = (rover, roverVar, whichRover) => {
       if (!rover || rover !== store.opportunity) {
           getOpportunity(store)
           rover = store.opportunity
-          const test = roverImages(rover)
       } else{
         const photodate = new Date(rover.date)
       }
@@ -193,5 +188,5 @@ const getOpportunity = async function (state) {
 
     const opportunityResp = await fetch(`http://localhost:3000/opportunity`)
     opportunity  = await opportunityResp.json()
-    updateStore(store, { opportunity  })
+    updateStore(store, { opportunity })
 }
